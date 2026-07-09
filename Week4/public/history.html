@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History | Finease</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-16);
+      margin-bottom: var(--spacing-24);
+      align-items: end;
+    }
+    .table-box th {
+      border-bottom: 1px solid var(--color-static-black);
+      padding: 10px;
+      text-align: left;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+    .table-box td {
+      padding: 12px 10px;
+      border-bottom: 1px dashed var(--color-static-black);
+      font-size: var(--text-body-sm);
+    }
+    .table-box tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Navigation Pill -->
+  <nav class="nav-pill">
+    <a href="index.html" class="nav-logo">Finease</a>
+    <div style="display: flex; gap: 15px; font-weight: 500; font-size: 14px;">
+      <a href="dashboard.html" style="color: var(--color-static-black); text-decoration: none;">DASHBOARD</a>
+      <a href="history.html" style="color: var(--color-static-black); text-decoration: none; border-bottom: 2px solid var(--color-static-black);">HISTORY</a>
+      <a href="reports.html" style="color: var(--color-static-black); text-decoration: none;">REPORTS</a>
+      <a href="assistant.html" style="color: var(--color-static-black); text-decoration: none;">ASSISTANT</a>
+      <a href="settings.html" style="color: var(--color-static-black); text-decoration: none;">SETTINGS</a>
+    </div>
+    <a href="add-transaction.html" class="btn-get-app">
+      LOG CASH
+    </a>
+  </nav>
+
+  <div class="app-container">
+    <header style="margin-bottom: var(--spacing-34); margin-top: 24px;">
+      <h1 class="display-headline display-medium" style="text-align: left;">HISTORY</h1>
+      <p style="font-weight: 500;">Filter through past ledger events. Saturated tags flag each category type.</p>
+    </header>
+
+    <!-- Filters -->
+    <div class="card-sticker khaki" style="margin-bottom: var(--spacing-34);">
+      <div class="filter-grid">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="searchDesc">SEARCH</label>
+          <input type="text" id="searchDesc" class="form-input" placeholder="Search logs...">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="filterType">TYPE</label>
+          <select id="filterType" class="form-input" style="height: 50px;">
+            <option value="all">ALL TYPES</option>
+            <option value="income">INCOME</option>
+            <option value="expense">EXPENSE</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="filterCategory">CATEGORY</label>
+          <select id="filterCategory" class="form-input" style="height: 50px;">
+            <option value="all">ALL CATEGORIES</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- History list -->
+    <div class="card-sticker white">
+      <table style="width: 100%; border-collapse: collapse;" class="table-box">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th style="width: 80px; text-align: center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="historyLogsBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script>
+    const searchInput = document.getElementById("searchDesc");
+    const typeFilter = document.getElementById("filterType");
+    const categoryFilter = document.getElementById("filterCategory");
+    const tableBody = document.getElementById("historyLogsBody");
+
+    function populateCategoryOptions() {
+      const transactions = getTransactions();
+      const categories = [...new Set(transactions.map(t => t.category))];
+      
+      categoryFilter.innerHTML = `<option value="all">ALL CATEGORIES</option>`;
+      categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat.toUpperCase();
+        categoryFilter.appendChild(opt);
+      });
+    }
+
+    function renderHistory() {
+      const settings = getSettings();
+      const symbol = settings.currency || "₹";
+      const transactions = getTransactions();
+
+      const searchVal = searchInput.value.toLowerCase();
+      const typeVal = typeFilter.value;
+      const categoryVal = categoryFilter.value;
+
+      const filtered = transactions.filter(t => {
+        const matchesSearch = t.description.toLowerCase().includes(searchVal);
+        const matchesType = typeVal === "all" || t.type === typeVal;
+        const matchesCategory = categoryVal === "all" || t.category === categoryVal;
+        return matchesSearch && matchesType && matchesCategory;
+      });
+
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      tableBody.innerHTML = "";
+      if (filtered.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--color-hairline-smoke);">No ledger items match the criteria.</td></tr>`;
+      } else {
+        filtered.forEach(t => {
+          const tr = document.createElement("tr");
+          const isIncome = t.type === "income";
+          const sign = isIncome ? "+" : "-";
+          const color = isIncome ? "color: var(--color-static-black);" : "color: var(--color-riot-pink);";
+
+          tr.innerHTML = `
+            <td style="font-weight: 700;">${t.description}</td>
+            <td><span style="font-size: 11px; font-weight: 700; border: 1px solid #000; padding: 2px 6px; border-radius: 4px; background: ${isIncome ? 'var(--color-toxic-lime)' : 'var(--color-riot-pink)'}">${t.type.toUpperCase()}</span></td>
+            <td><span style="font-size: 11px; font-weight: 700; border: 1px solid #000; padding: 2px 6px; border-radius: 4px; background: var(--color-sticker-khaki);">${t.category}</span></td>
+            <td>${t.date}</td>
+            <td style="font-weight: 700; ${color}">${sign}${symbol}${t.amount.toFixed(2)}</td>
+            <td style="text-align: center;">
+              <button class="btn-outline" style="padding: 4px 8px; font-size: 11px; color: var(--color-riot-pink);" onclick="handleDelete(${t.id})">
+                DELETE
+              </button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    }
+
+    window.handleDelete = function(id) {
+      if (confirm("Delete this transaction?")) {
+        deleteTransaction(id);
+        renderHistory();
+        populateCategoryOptions();
+      }
+    };
+
+    searchInput.addEventListener("input", renderHistory);
+    typeFilter.addEventListener("change", renderHistory);
+    categoryFilter.addEventListener("change", renderHistory);
+
+    populateCategoryOptions();
+    renderHistory();
+  </script>
+</body>
+</html>

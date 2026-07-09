@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | Finease</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Floating Navigation Pill -->
+  <nav class="nav-pill">
+    <a href="index.html" class="nav-logo">Finease</a>
+    <div style="display: flex; gap: 15px; font-weight: 500; font-size: 14px;">
+      <a href="dashboard.html" style="color: var(--color-static-black); text-decoration: none;">DASHBOARD</a>
+      <a href="history.html" style="color: var(--color-static-black); text-decoration: none;">HISTORY</a>
+      <a href="reports.html" style="color: var(--color-static-black); text-decoration: none;">REPORTS</a>
+      <a href="assistant.html" style="color: var(--color-static-black); text-decoration: none;">ASSISTANT</a>
+      <a href="settings.html" style="color: var(--color-static-black); text-decoration: none; border-bottom: 2px solid var(--color-static-black);">SETTINGS</a>
+    </div>
+    <a href="add-transaction.html" class="btn-get-app">
+      LOG CASH
+    </a>
+  </nav>
+
+  <div class="app-container" style="max-width: 600px;">
+    <header style="margin-bottom: var(--spacing-34); margin-top: 24px; text-align: center;">
+      <h1 class="display-headline display-medium">SETTINGS</h1>
+      <p style="font-weight: 500;">Set your targets. Outlined settings modules control local storage preferences.</p>
+    </header>
+
+    <div class="card-sticker white">
+      <form id="settingsForm">
+        <div class="form-group">
+          <label for="settingsBudget">MONTHLY BUDGET TARGET</label>
+          <input type="number" id="settingsBudget" class="form-input" min="0" placeholder="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="settingsCurrency">LEDGER CURRENCY</label>
+          <select id="settingsCurrency" class="form-input" style="height: 50px;" required>
+            <option value="₹">Rupee (₹)</option>
+            <option value="$">US Dollar ($)</option>
+            <option value="€">Euro (€)</option>
+            <option value="£">Pound (£)</option>
+            <option value="¥">Yen (¥)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-toxic" style="width: 100%; justify-content: center; height: 50px; margin-top: 16px; font-size: 16px;">
+          SAVE SETTINGS
+        </button>
+      </form>
+    </div>
+
+    <!-- Danger Zone Reset -->
+    <div class="card-sticker pink" style="margin-top: 32px; border-color: var(--color-static-black);">
+      <h2 style="font-family: var(--font-display); text-transform: uppercase; font-size: 24px; color: var(--color-static-black);">DANGER ZONE</h2>
+      <p style="font-size: var(--text-body-sm); margin-top: 4px; color: var(--color-static-black);">
+        Clearing database items empties the local storage ledger completely.
+      </p>
+      
+      <button id="resetDataBtn" class="btn-outline" style="margin-top: 16px; width: 100%; height: 50px; color: var(--color-static-black); font-weight: 700; background: var(--color-card-white);">
+        RESET ALL DATA
+      </button>
+    </div>
+
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script>
+    const settingsForm = document.getElementById("settingsForm");
+    const settingsBudget = document.getElementById("settingsBudget");
+    const settingsCurrency = document.getElementById("settingsCurrency");
+    const resetDataBtn = document.getElementById("resetDataBtn");
+
+    function loadSettings() {
+      const settings = getSettings();
+      settingsBudget.value = settings.budget || 0;
+      settingsCurrency.value = settings.currency || "₹";
+    }
+
+    settingsForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const newSettings = {
+        budget: parseFloat(settingsBudget.value),
+        currency: settingsCurrency.value,
+        darkMode: true // Always use default light/sticker theme as per UGLYCASH specs
+      };
+
+      saveSettings(newSettings);
+      alert("Settings saved successfully!");
+      window.location.href = "dashboard.html";
+    });
+
+    resetDataBtn.addEventListener("click", () => {
+      if (confirm("Reset everything? Action is irreversible.")) {
+        clearTransactions();
+        alert("Local ledger database wiped.");
+        window.location.href = "dashboard.html";
+      }
+    });
+
+    loadSettings();
+  </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Finease</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--spacing-24);
+      margin-bottom: var(--spacing-34);
+    }
+    .metric-card {
+      border: 1px solid var(--color-static-black);
+      border-radius: var(--radius-cards);
+      padding: var(--spacing-24);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .metric-title {
+      font-size: var(--text-body-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--color-static-black);
+      opacity: 0.8;
+    }
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: var(--text-heading);
+      font-weight: 900;
+      line-height: 0.95;
+      margin-top: 12px;
+      color: var(--color-static-black);
+    }
+    .progress-track {
+      background-color: var(--color-card-white);
+      border: 1px solid var(--color-static-black);
+      border-radius: var(--radius-buttons);
+      height: 20px;
+      width: 100%;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: var(--color-toxic-lime);
+      border-right: 1px solid var(--color-static-black);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .table-box th {
+      border-bottom: 1px solid var(--color-static-black);
+      padding: 10px;
+      text-align: left;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+    .table-box td {
+      padding: 12px 10px;
+      border-bottom: 1px dashed var(--color-static-black);
+      font-size: var(--text-body-sm);
+    }
+    .table-box tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Navigation Pill -->
+  <nav class="nav-pill">
+    <a href="index.html" class="nav-logo">Finease</a>
+    <div style="display: flex; gap: 15px; font-weight: 500; font-size: 14px;">
+      <a href="dashboard.html" style="color: var(--color-static-black); text-decoration: none; border-bottom: 2px solid var(--color-static-black);">DASHBOARD</a>
+      <a href="history.html" style="color: var(--color-static-black); text-decoration: none;">HISTORY</a>
+      <a href="reports.html" style="color: var(--color-static-black); text-decoration: none;">REPORTS</a>
+      <a href="assistant.html" style="color: var(--color-static-black); text-decoration: none;">ASSISTANT</a>
+      <a href="settings.html" style="color: var(--color-static-black); text-decoration: none;">SETTINGS</a>
+    </div>
+    <a href="add-transaction.html" class="btn-get-app">
+      LOG CASH
+    </a>
+  </nav>
+
+  <div class="app-container">
+    <header style="margin-bottom: var(--spacing-34); margin-top: 24px;">
+      <h1 class="display-headline display-medium" style="text-align: left;">LEDGER</h1>
+      <p style="font-weight: 500;">Financial overview. Saturated stickers representing currency movements.</p>
+    </header>
+
+    <!-- Metrics Grid -->
+    <div class="metric-grid">
+      <div class="metric-card khaki">
+        <span class="metric-title">Balance</span>
+        <span class="metric-value" id="balanceText">₹0.00</span>
+      </div>
+      <div class="metric-card lime">
+        <span class="metric-title">Income</span>
+        <span class="metric-value" id="incomeText">₹0.00</span>
+      </div>
+      <div class="metric-card pink">
+        <span class="metric-title">Expenses</span>
+        <span class="metric-value" id="expenseText">₹0.00</span>
+      </div>
+    </div>
+
+    <!-- Details split layout -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-34); align-items: start;">
+      
+      <!-- Recent Transactions Table Card -->
+      <div class="card-sticker white">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h2 style="font-family: var(--font-display); text-transform: uppercase; font-size: 24px;">RECENT LOGS</h2>
+          <a href="history.html" class="btn-outline" style="padding: 4px 10px; font-size: 12px;">VIEW ALL</a>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse;" class="table-box">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="recentLogsBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Monthly Target Card -->
+      <div class="card-sticker cyan">
+        <h2 style="font-family: var(--font-display); text-transform: uppercase; font-size: 24px;">BUDGET TARGET</h2>
+        <div style="margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-family: var(--font-display); font-size: 32px; font-weight: 900;" id="spentAmount">₹0.00</span>
+            <span style="font-size: 12px; font-weight: 700;" id="limitAmount">OF ₹0.00 LIMIT</span>
+          </div>
+          
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700;">
+            <span id="percentText">0% SPENT</span>
+            <span id="statusText">ON TRACK</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script>
+    const balanceText = document.getElementById("balanceText");
+    const incomeText = document.getElementById("incomeText");
+    const expenseText = document.getElementById("expenseText");
+    const recentLogsBody = document.getElementById("recentLogsBody");
+    const spentAmount = document.getElementById("spentAmount");
+    const limitAmount = document.getElementById("limitAmount");
+    const progressFill = document.getElementById("progressFill");
+    const percentText = document.getElementById("percentText");
+    const statusText = document.getElementById("statusText");
+
+    function renderDashboard() {
+      const settings = getSettings();
+      const symbol = settings.currency || "₹";
+
+      const balance = getBalance();
+      const income = getTotalIncome();
+      const expense = getTotalExpenses();
+
+      balanceText.textContent = `${symbol}${balance.toFixed(2)}`;
+      incomeText.textContent = `${symbol}${income.toFixed(2)}`;
+      expenseText.textContent = `${symbol}${expense.toFixed(2)}`;
+
+      // Render recent logs (max 5)
+      const transactions = getTransactions();
+      const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+      recentLogsBody.innerHTML = "";
+      if (sorted.length === 0) {
+        recentLogsBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--color-hairline-smoke);">No entries. Hit LOG CASH above!</td></tr>`;
+      } else {
+        sorted.forEach(t => {
+          const tr = document.createElement("tr");
+          const isIncome = t.type === "income";
+          const sign = isIncome ? "+" : "-";
+          const color = isIncome ? "color: var(--color-static-black);" : "color: var(--color-riot-pink);";
+          
+          tr.innerHTML = `
+            <td style="font-weight: 700;">${t.description}</td>
+            <td><span style="font-size: 12px; font-weight: 700; border: 1px solid #000; padding: 2px 6px; border-radius: 4px; background: ${isIncome ? 'var(--color-toxic-lime)' : 'var(--color-sticker-khaki)'}">${t.category}</span></td>
+            <td>${t.date}</td>
+            <td style="font-weight: 700; ${color}">${sign}${symbol}${t.amount.toFixed(2)}</td>
+          `;
+          recentLogsBody.appendChild(tr);
+        });
+      }
+
+      // Budget limit setup
+      const budget = settings.budget || 0;
+      limitAmount.textContent = `OF ${symbol}${budget.toFixed(2)} LIMIT`;
+      spentAmount.textContent = `${symbol}${expense.toFixed(2)}`;
+
+      if (budget > 0) {
+        const percent = Math.min((expense / budget) * 100, 100);
+        progressFill.style.width = `${percent}%`;
+        percentText.textContent = `${percent.toFixed(0)}% SPENT`;
+
+        if (expense > budget) {
+          statusText.textContent = "OVER LIMIT";
+          statusText.style.color = "var(--color-riot-pink)";
+          progressFill.style.backgroundColor = "var(--color-riot-pink)";
+        } else {
+          statusText.textContent = "ON TRACK";
+          statusText.style.color = "var(--color-static-black)";
+          progressFill.style.backgroundColor = "var(--color-toxic-lime)";
+        }
+      } else {
+        progressFill.style.width = "0%";
+        percentText.textContent = "NO TARGET SET";
+        statusText.textContent = "N/A";
+      }
+    }
+
+    renderDashboard();
+  </script>
+</body>
+</html>

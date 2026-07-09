@@ -1,0 +1,407 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Permanent+Marker&family=Roboto+Condensed:wght@700;900&display=swap');
+
+:root {
+  /* Colors */
+  --color-static-black: #000000;
+  --color-paper-cream: #f2f2f2;
+  --color-card-white: #ffffff;
+  --color-surface-graphite: #3a3a3a;
+  --color-hardware-ink: #000100;
+  --color-hairline-smoke: #6e6e6e;
+  --color-placeholder-ash: #888888;
+  --color-sticker-khaki: #e7e3bf;
+  --color-riot-pink: #fa00ff;
+  --color-voltage-cyan: #02bbff;
+  --color-toxic-lime: #adff02;
+
+  /* Fonts */
+  --font-display: 'Roboto Condensed', -apple-system, sans-serif;
+  --font-inter: 'Inter', -apple-system, sans-serif;
+  --font-marker: 'Permanent Marker', cursive;
+
+  /* Typography Scales */
+  --text-caption: 12px;
+  --text-body-sm: 14px;
+  --text-body: 18px;
+  --text-subheading: 20px;
+  --text-heading-sm: 24px;
+  --text-heading: 64px;
+  --text-heading-lg: 85px;
+  --text-display: 164px;
+
+  /* Border Radii */
+  --radius-cards: 16px;
+  --radius-buttons: 16px;
+  --radius-hairline: 1px;
+  --radius-herocards: 38px;
+  --radius-phoneframes: 43px;
+  --radius-featurepanels: 46px;
+
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-10: 10px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-34: 34px;
+  --spacing-96: 96px;
+  --spacing-168: 168px;
+}
+
+/* Reset and Defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-paper-cream);
+  color: var(--color-static-black);
+  font-family: var(--font-inter);
+  font-size: var(--text-body);
+  letter-spacing: -0.02em;
+  line-height: 1.33;
+  min-height: 100vh;
+  padding-bottom: var(--spacing-96);
+}
+
+/* Top Navigation Pill component */
+.nav-pill {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
+  background-color: var(--color-card-white);
+  border: 1px solid var(--color-static-black);
+  border-radius: 16px;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-static-black);
+  text-decoration: none;
+}
+
+.nav-socials {
+  display: flex;
+  gap: var(--spacing-10);
+}
+
+.nav-socials a {
+  color: var(--color-static-black);
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.btn-get-app {
+  background-color: var(--color-card-white);
+  border: 1px solid var(--color-static-black);
+  border-radius: 16px;
+  color: var(--color-static-black);
+  font-family: var(--font-inter);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  padding: 6px 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-get-app::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: var(--color-static-black);
+}
+
+/* App Container Layout - Clean, centered, comfortable whitespace */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 24px 24px 24px;
+}
+
+.section-gap {
+  margin-top: var(--spacing-96);
+  margin-bottom: var(--spacing-96);
+}
+
+/* Display Headline shouting text */
+.display-headline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--color-static-black);
+  line-height: 0.85;
+  text-align: center;
+}
+
+.display-large {
+  font-size: var(--text-display);
+  letter-spacing: -5.41px;
+}
+
+.display-medium {
+  font-size: var(--text-heading-lg);
+  letter-spacing: -2.81px;
+}
+
+.display-small {
+  font-size: var(--text-heading);
+  line-height: 0.94;
+  letter-spacing: -1.28px;
+}
+
+/* Card Styling - The peeled sticker effect */
+.card-sticker {
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-cards);
+  padding: var(--spacing-24);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-sticker.khaki { background-color: var(--color-sticker-khaki); }
+.card-sticker.pink { background-color: var(--color-riot-pink); }
+.card-sticker.cyan { background-color: var(--color-voltage-cyan); }
+.card-sticker.lime { background-color: var(--color-toxic-lime); }
+.card-sticker.white { background-color: var(--color-card-white); }
+.card-sticker.graphite { 
+  background-color: var(--color-surface-graphite); 
+  color: var(--color-card-white);
+}
+
+/* Sub-labels / Captions styling */
+.card-caption {
+  font-family: var(--font-inter);
+  font-size: var(--text-body);
+  font-weight: 700;
+  color: var(--color-static-black);
+  margin-top: 12px;
+  line-height: 1.33;
+}
+
+.card-caption span {
+  display: block;
+  font-weight: 400;
+  font-size: var(--text-body-sm);
+  color: var(--color-hairline-smoke);
+}
+
+/* Tilted illustrations */
+.sticker-badge {
+  font-family: var(--font-marker);
+  font-size: 30px;
+  padding: 6px 14px;
+  border: 1px solid var(--color-static-black);
+  background-color: var(--color-toxic-lime);
+  color: var(--color-static-black);
+  display: inline-block;
+  transform: rotate(-5deg);
+  width: fit-content;
+}
+
+/* Three-Up Feature Row Grid */
+.feature-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-34);
+}
+
+/* Toxic Lime Pill Button */
+.btn-toxic {
+  background-color: var(--color-toxic-lime);
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-buttons);
+  color: var(--color-static-black);
+  font-family: var(--font-inter);
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.btn-toxic:hover {
+  background-color: #92e000;
+}
+
+/* Outlined Open Button / Standard Outlined */
+.btn-outline {
+  background-color: var(--color-card-white);
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-buttons);
+  color: var(--color-static-black);
+  font-family: var(--font-inter);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline:hover {
+  background-color: var(--color-paper-cream);
+}
+
+/* Form layouts */
+.form-group {
+  margin-bottom: var(--spacing-16);
+}
+
+.form-group label {
+  display: block;
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-cards);
+  background-color: var(--color-card-white);
+  color: var(--color-static-black);
+  font-family: var(--font-inter);
+  font-size: var(--text-body);
+  outline: none;
+}
+
+.form-input:focus {
+  background-color: var(--color-sticker-khaki);
+}
+
+/* Bank Listing Stack elements */
+.account-panel {
+  background-color: var(--color-surface-graphite);
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-featurepanels);
+  padding: var(--spacing-24);
+}
+
+.account-row {
+  background-color: var(--color-card-white);
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-cards);
+  padding: var(--spacing-16);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-static-black);
+}
+
+.account-row:last-child {
+  margin-bottom: 0;
+}
+
+.account-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-flag {
+  width: 24px;
+  height: 24px;
+  background-color: var(--color-static-black);
+  color: var(--color-card-white);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.account-info h4 {
+  font-size: var(--text-body);
+  font-weight: 700;
+}
+
+.account-info p {
+  font-size: var(--text-body-sm);
+  color: var(--color-hairline-smoke);
+}
+
+/* Chat bubble styling for UGLYCASH */
+.chat-window {
+  border: 1px solid var(--color-static-black);
+  border-radius: var(--radius-cards);
+  background-color: var(--color-card-white);
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  padding: var(--spacing-16);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: var(--radius-cards);
+  border: 1px solid var(--color-static-black);
+  font-size: var(--text-body-sm);
+}
+
+.chat-bubble.user {
+  background-color: var(--color-riot-pink);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.ai {
+  background-color: var(--color-sticker-khaki);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+/* Responsive elements */
+@media (max-width: 768px) {
+  .display-large {
+    font-size: 64px;
+    letter-spacing: -2px;
+  }
+  .display-medium {
+    font-size: 44px;
+    letter-spacing: -1.5px;
+  }
+  .display-small {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+  .nav-pill {
+    width: 95%;
+  }
+}

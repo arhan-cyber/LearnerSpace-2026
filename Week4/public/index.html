@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finease — Gen-Z Personal Finance</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Floating Navigation Pill -->
+  <nav class="nav-pill">
+    <a href="index.html" class="nav-logo">Finease</a>
+    <div style="display: flex; gap: 15px; font-weight: 500; font-size: 14px;">
+      <a href="dashboard.html" style="color: var(--color-static-black); text-decoration: none;">DASHBOARD</a>
+      <a href="history.html" style="color: var(--color-static-black); text-decoration: none;">HISTORY</a>
+      <a href="reports.html" style="color: var(--color-static-black); text-decoration: none;">REPORTS</a>
+      <a href="assistant.html" style="color: var(--color-static-black); text-decoration: none;">ASSISTANT</a>
+      <a href="settings.html" style="color: var(--color-static-black); text-decoration: none;">SETTINGS</a>
+    </div>
+    <a href="add-transaction.html" class="btn-get-app">
+      LOG CASH
+    </a>
+  </nav>
+
+  <div class="app-container">
+    <!-- Hero Header -->
+    <header class="section-gap" style="text-align: center;">
+      <h1 class="display-headline display-large">UGLY<br>CASH</h1>
+      <p style="font-family: var(--font-inter); font-size: var(--text-body); max-width: 600px; margin: 24px auto; color: var(--color-static-black); font-weight: 500;">
+        Irreverent, maximalist finance tracker built for speed, privacy, and loud budgeting. Outlined stickers. Saturated fills. Powered by local storage & Gemini.
+      </p>
+      
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 24px;">
+        <a href="dashboard.html" class="btn-toxic">
+          GO TO DASHBOARD
+        </a>
+        <a href="add-transaction.html" class="btn-outline">
+          ADD TRANSACTION
+        </a>
+      </div>
+    </header>
+
+    <!-- Custom Tilted Sticker -->
+    <div style="text-align: center; margin-bottom: var(--spacing-96);">
+      <div class="sticker-badge">
+        100% LOCAL LEDGER
+      </div>
+    </div>
+
+    <!-- Three-Up Feature Row Grid -->
+    <section class="section-gap">
+      <div class="feature-row">
+        <!-- Card 1: Khaki -->
+        <div class="card-sticker khaki">
+          <div style="font-family: var(--font-display); font-size: 32px; font-weight: 900; line-height: 0.95; text-transform: uppercase;">
+            ZERO CLOUD<br>DATABASE
+          </div>
+          <div class="card-caption">
+            Private storage
+            <span>Everything stays in your browser's localStorage. No leaks.</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Pink -->
+        <div class="card-sticker pink">
+          <div style="font-family: var(--font-display); font-size: 32px; font-weight: 900; line-height: 0.95; text-transform: uppercase;">
+            VISUAL<br>CHARTS
+          </div>
+          <div class="card-caption">
+            Riot Pink layout
+            <span>Vivid category segmentation highlighting where cash escapes.</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Cyan -->
+        <div class="card-sticker cyan">
+          <div style="font-family: var(--font-display); font-size: 32px; font-weight: 900; line-height: 0.95; text-transform: uppercase;">
+            GEMINI<br>ADVICE
+          </div>
+          <div class="card-caption">
+            Loud assistant
+            <span>Real-time spending critiques and advice powered by Gemini.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script>
+    // Set default currency preference if none exists
+    const settings = getSettings();
+    if (!settings.currency) {
+      settings.currency = "₹";
+      saveSettings(settings);
+    }
+  </script>
+</body>
+</html>

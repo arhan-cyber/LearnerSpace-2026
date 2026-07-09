@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant | Finease</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Floating Navigation Pill -->
+  <nav class="nav-pill">
+    <a href="index.html" class="nav-logo">Finease</a>
+    <div style="display: flex; gap: 15px; font-weight: 500; font-size: 14px;">
+      <a href="dashboard.html" style="color: var(--color-static-black); text-decoration: none;">DASHBOARD</a>
+      <a href="history.html" style="color: var(--color-static-black); text-decoration: none;">HISTORY</a>
+      <a href="reports.html" style="color: var(--color-static-black); text-decoration: none;">REPORTS</a>
+      <a href="assistant.html" style="color: var(--color-static-black); text-decoration: none; border-bottom: 2px solid var(--color-static-black);">ASSISTANT</a>
+      <a href="settings.html" style="color: var(--color-static-black); text-decoration: none;">SETTINGS</a>
+    </div>
+    <a href="add-transaction.html" class="btn-get-app">
+      LOG CASH
+    </a>
+  </nav>
+
+  <div class="app-container" style="max-width: 800px;">
+    <header style="margin-bottom: var(--spacing-34); margin-top: 24px;">
+      <h1 class="display-headline display-medium" style="text-align: left;">AI ASSISTANT</h1>
+      <p style="font-weight: 500;">Chatbot advice. Outlined interface containing responsive Gemini feedback engines.</p>
+    </header>
+
+    <!-- Suggestion Chips -->
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+      <button class="btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="sendSuggestion('Give me 3 fast tips to build a starter emergency fund.')">EMERGENCY FUND</button>
+      <button class="btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="sendSuggestion('Explain the 50/30/20 budget rule like I am 15.')">50/30/20 RULE</button>
+      <button class="btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="sendSuggestion('What is the best way to cut down subscription leaks?')">SUBSCRIPTIONS</button>
+    </div>
+
+    <!-- Chat container -->
+    <div class="chat-window">
+      <div class="chat-messages" id="chatHistory">
+        <div class="chat-bubble ai">
+          Yo! I am the Finease AI agent. Drop your budget queries below. Outlined borders keep my thoughts contained.
+        </div>
+      </div>
+
+      <form class="chat-input-area" id="chatForm" style="display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--color-static-black); background-color: var(--color-card-white);">
+        <input type="text" id="userInput" class="form-input" placeholder="Type message..." required autocomplete="off" style="flex-grow: 1;">
+        <button type="submit" class="btn-toxic" style="padding: 10px 20px;">
+          SEND
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ai.js"></script>
+  <script>
+    const chatHistory = document.getElementById("chatHistory");
+    const chatForm = document.getElementById("chatForm");
+    const userInput = document.getElementById("userInput");
+
+    function appendMessage(sender, text) {
+      const bubble = document.createElement("div");
+      bubble.className = `chat-bubble ${sender}`;
+      bubble.textContent = text;
+      chatHistory.appendChild(bubble);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    window.sendSuggestion = function(text) {
+      userInput.value = text;
+      chatForm.dispatchEvent(new Event('submit'));
+    };
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      appendMessage("user", text);
+      userInput.value = "";
+
+      const typingBubble = document.createElement("div");
+      typingBubble.className = "chat-bubble ai";
+      typingBubble.textContent = "Querying Gemini engines...";
+      chatHistory.appendChild(typingBubble);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try {
+        const reply = await askAI(text);
+        typingBubble.textContent = reply;
+      } catch (err) {
+        typingBubble.textContent = "AI offline. Please verify npm start is active.";
+      }
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    });
+  </script>
+</body>
+</html>

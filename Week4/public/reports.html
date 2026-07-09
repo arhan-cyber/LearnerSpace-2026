@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | Finease</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-34);
+      align-items: start;
+    }
+    .insights-box {
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+    }
+    .insights-text {
+      background-color: var(--color-paper-cream);
+      border: 1px solid var(--color-static-black);
+      border-radius: var(--radius-cards);
+      padding: var(--spacing-16);
+      margin-top: 16px;
+      font-size: var(--text-body-sm);
+      line-height: 1.5;
+      white-space: pre-line;
+      flex-grow: 1;
+    }
+    .loader {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Navigation Pill -->
+  <nav class="nav-pill">
+    <a href="index.html" class="nav-logo">Finease</a>
+    <div style="display: flex; gap: 15px; font-weight: 500; font-size: 14px;">
+      <a href="dashboard.html" style="color: var(--color-static-black); text-decoration: none;">DASHBOARD</a>
+      <a href="history.html" style="color: var(--color-static-black); text-decoration: none;">HISTORY</a>
+      <a href="reports.html" style="color: var(--color-static-black); text-decoration: none; border-bottom: 2px solid var(--color-static-black);">REPORTS</a>
+      <a href="assistant.html" style="color: var(--color-static-black); text-decoration: none;">ASSISTANT</a>
+      <a href="settings.html" style="color: var(--color-static-black); text-decoration: none;">SETTINGS</a>
+    </div>
+    <a href="add-transaction.html" class="btn-get-app">
+      LOG CASH
+    </a>
+  </nav>
+
+  <div class="app-container">
+    <header style="margin-bottom: var(--spacing-34); margin-top: 24px;">
+      <h1 class="display-headline display-medium" style="text-align: left;">REPORTS</h1>
+      <p style="font-weight: 500;">Categorized distributions. Tap the sticker trigger to critique spending habits.</p>
+    </header>
+
+    <div class="report-grid">
+      <!-- Chart sticker card -->
+      <div class="card-sticker white">
+        <h2 style="font-family: var(--font-display); text-transform: uppercase; font-size: 24px; margin-bottom: 16px;">DISTRIBUTION</h2>
+        <div style="max-width: 320px; margin: 0 auto;">
+          <canvas id="expensesChart"></canvas>
+          <div id="noChartData" style="display: none; text-align: center; padding: 40px 0; color: var(--color-hairline-smoke);">
+            NO EXPENSE LOGS FOUND
+          </div>
+        </div>
+      </div>
+
+      <!-- AI critique sticker card -->
+      <div class="card-sticker khaki insights-box">
+        <h2 style="font-family: var(--font-display); text-transform: uppercase; font-size: 24px;">GEMINI CRITIQUE</h2>
+        <p style="font-size: var(--text-body-sm); margin-top: 4px;">Press the action block to query AI recommendations</p>
+        
+        <button id="getInsightsBtn" class="btn-toxic" style="margin-top: 16px;">
+          CRITIQUE SPENDING
+        </button>
+
+        <div class="loader" id="insightsLoader">
+          <i class="fa-solid fa-spinner fa-spin"></i> QUERYING GEMINI ENGINE...
+        </div>
+
+        <div class="insights-text" id="insightsResult">
+          Logs analysis suggestions will be formatted here.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ai.js"></script>
+  <script>
+    const getInsightsBtn = document.getElementById("getInsightsBtn");
+    const insightsResult = document.getElementById("insightsResult");
+    const insightsLoader = document.getElementById("insightsLoader");
+
+    let myChart = null;
+
+    function renderChart() {
+      const totals = getCategoryTotals();
+      const categories = Object.keys(totals);
+      const values = Object.values(totals);
+
+      const noDataEl = document.getElementById("noChartData");
+      const canvasEl = document.getElementById("expensesChart");
+
+      if (categories.length === 0) {
+        noDataEl.style.display = "block";
+        canvasEl.style.display = "none";
+        return;
+      }
+
+      noDataEl.style.display = "none";
+      canvasEl.style.display = "block";
+
+      const ctx = canvasEl.getContext("2d");
+
+      if (myChart) {
+        myChart.destroy();
+      }
+
+      myChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: categories.map(c => c.toUpperCase()),
+          datasets: [{
+            data: values,
+            backgroundColor: [
+              "#fa00ff", // Riot Pink
+              "#02bbff", // Voltage Cyan
+              "#adff02", // Toxic Lime
+              "#e7e3bf", // Sticker Khaki
+              "#ffffff",
+              "#3a3a3a",
+              "#6e6e6e"
+            ],
+            borderWidth: 1,
+            borderColor: "#000000"
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#000000',
+                font: {
+                  family: 'Inter',
+                  size: 11,
+                  weight: 'bold'
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    getInsightsBtn.addEventListener("click", async () => {
+      const totals = getCategoryTotals();
+      const balance = getBalance();
+      const income = getTotalIncome();
+      const expense = getTotalExpenses();
+      const settings = getSettings();
+      const symbol = settings.currency || "₹";
+
+      if (Object.keys(totals).length === 0 && income === 0) {
+        insightsResult.textContent = "Please add transactions first before executing critique engine.";
+        return;
+      }
+
+      getInsightsBtn.style.display = "none";
+      insightsResult.style.display = "none";
+      insightsLoader.style.display = "flex";
+
+      const prompt = `
+        Analyze these numbers for a Gen-Z finance critique:
+        - Balance: ${symbol}${balance.toFixed(2)}
+        - Income: ${symbol}${income.toFixed(2)}
+        - Expenses: ${symbol}${expense.toFixed(2)}
+        - Spending Breakdown: ${JSON.stringify(totals)}
+
+        Give me 3 bulleted recommendations to optimize money management. Make it direct, slightly irreverent, and fast to read. Keep the tone Gen-Z/fintech style.
+      `;
+
+      try {
+        const reply = await askAI(prompt);
+        insightsResult.textContent = reply;
+      } catch (err) {
+        insightsResult.textContent = "Gemini server offline. Run npm start.";
+      } finally {
+        insightsLoader.style.display = "none";
+        insightsResult.style.display = "block";
+        getInsightsBtn.style.display = "inline-flex";
+      }
+    });
+
+    renderChart();
+  </script>
+</body>
+</html>
